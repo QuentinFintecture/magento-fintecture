@@ -140,30 +140,35 @@ class HandleRefund
                 }
 
                 $apiResponse = $this->sdk->pisClient->refund->generate($data, $state);
+
                 if (!$apiResponse->error) {
-                    if (isset($apiResponse->meta->status) && $apiResponse->meta->status === 'refund_waiting') {
-                        $comment = __('You must proceed to the refund directly from the Fintecture Console with this type of account.');
-                    } else {
+                    $refundStatus = $apiResponse->result->meta->status ?? '';
+                } else {
+                    $refundStatus = $apiResponse->result->errors[0]->code ?? '';
+                }
+
+                switch ($refundStatus) {
+                    case 'refund_accepted':
                         if ($order->canHold()) {
                             $order->hold();
                         }
                         $comment = __('The refund link has been send.');
-                    }
-                    $order->addCommentToStatusHistory($comment->render());
-                    $this->orderRepository->save($order);
-
-                    $this->fintectureLogger->info('Refund', [
-                        'message' => $comment,
-                        'incrementOrderId' => $incrementOrderId,
-                    ]);
-                } else {
-                    $this->fintectureLogger->error('Refund', [
-                        'message' => 'Invalid API response',
-                        'incrementOrderId' => $incrementOrderId,
-                        'response' => $apiResponse->errorMsg,
-                    ]);
-                    throw new \Exception($apiResponse->errorMsg);
+                        break;
+                    case 'refund_waiting':
+                        throw new \Exception('You must proceed to the refund directly from the Fintecture Console with this type of account.');
+                    case 'refund_aborted':
+                        throw new \Exception('An error has occurred during refund. Please check your account in the Fintecture console.');
+                    default:
+                        throw new \Exception('Sorry, something went wrong. Please try again later.');
                 }
+
+                $order->addCommentToStatusHistory($comment->render());
+                $this->orderRepository->save($order);
+
+                $this->fintectureLogger->info('Refund', [
+                    'message' => $comment,
+                    'incrementOrderId' => $incrementOrderId,
+                ]);
             } else {
                 $this->fintectureLogger->error('Refund', [
                     'message' => 'State of creditmemo if empty',
@@ -175,9 +180,7 @@ class HandleRefund
                 'exception' => $e,
                 'incrementOrderId' => $incrementOrderId,
             ]);
-            throw new LocalizedException(
-                __('Sorry, something went wrong. Please try again later.')
-            );
+            throw new LocalizedException(__($e->getMessage()));
         }
     }
 

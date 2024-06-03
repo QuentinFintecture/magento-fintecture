@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Fintecture\Payment\Helper;
 
 use Fintecture\Payment\Gateway\Config\Config;
+use Fintecture\Payment\Gateway\Http\Sdk;
 use Fintecture\Payment\Logger\Logger as FintectureLogger;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\App\Helper\AbstractHelper;
@@ -28,6 +29,8 @@ class Fintecture extends AbstractHelper
     public const RTP_TYPE = 'RequestToPay';
     public const BNPL_TYPE = 'BuyNowPayLater';
 
+    public const BNPL_PAYMENT_METHOD = 'bnpl';
+
     /** @var Config */
     protected $config;
 
@@ -49,6 +52,9 @@ class Fintecture extends AbstractHelper
     /** @var FintectureLogger */
     protected $fintectureLogger;
 
+    /** @var Sdk */
+    protected $sdk;
+
     public function __construct(
         Context $context,
         Config $config,
@@ -57,7 +63,8 @@ class Fintecture extends AbstractHelper
         TransactionRepositoryInterface $transactionRepository,
         SearchCriteriaBuilder $searchCriteriaBuilder,
         RemoteAddress $remoteAddress,
-        FintectureLogger $fintectureLogger
+        FintectureLogger $fintectureLogger,
+        Sdk $sdk
     ) {
         $this->config = $config;
         $this->historyCollectionFactory = $historyCollectionFactory;
@@ -66,6 +73,7 @@ class Fintecture extends AbstractHelper
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
         $this->remoteAddress = $remoteAddress;
         $this->fintectureLogger = $fintectureLogger;
+        $this->sdk = $sdk;
 
         parent::__construct($context);
     }
@@ -215,6 +223,10 @@ class Fintecture extends AbstractHelper
                 'status' => $this->config->getPaymentFailedStatus(),
                 'state' => Order::STATE_CANCELED,
             ],
+            'payment_cancelled' => [
+                'status' => $this->config->getPaymentFailedStatus(),
+                'state' => Order::STATE_CANCELED,
+            ],
             'sca_required' => [
                 'status' => $this->config->getPaymentFailedStatus(),
                 'state' => Order::STATE_CANCELED,
@@ -253,6 +265,7 @@ class Fintecture extends AbstractHelper
             'payment_partial' => __('A partial payment has been made.'),
             'payment_unsuccessful' => __('The payment was rejected by either the payer or the bank.'),
             'payment_error' => __('The payment has failed for technical reasons.'),
+            'payment_cancelled' => __('The payment has been cancelled by either the payer or the merchant.'),
             'sca_required' => __('The payer got redirected to their bank and needs to authenticate.'),
             'provider_required' => __('The payment has been dropped by the payer.'),
             'payment_expired' => __('The payment link has expired.'),
@@ -391,5 +404,16 @@ class Fintecture extends AbstractHelper
         }
 
         return $payload;
+    }
+
+    public function isBnplAvailable(): bool
+    {
+        $paymentMethods = $this->sdk->getPaymentMethods();
+
+        if (!$paymentMethods) {
+            return false;
+        }
+
+        return in_array(self::BNPL_PAYMENT_METHOD, $paymentMethods);
     }
 }

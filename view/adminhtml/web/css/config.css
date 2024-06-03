@@ -27,6 +27,7 @@
 }
 
 .fintecture-admin-section #connection-test-result.message-error,
-.fintecture-admin-section #connection-test-result.message-success {
+.fintecture-admin-section #connection-test-result.message-success,
+.fintecture-admin-warning {
     margin-top: 20px;
 }
