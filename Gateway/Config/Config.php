@@ -7,7 +7,7 @@ use Magento\Payment\Gateway\Config\Config as BaseConfig;
 class Config extends BaseConfig
 {
     const CODE = 'fintecture';
-    const VERSION = '3.5.3';
+    const VERSION = '3.5.4';
 
     const KEY_SHOP_NAME = 'general/store_information/name';
     const KEY_ACTIVE = 'active';
@@ -167,7 +167,7 @@ class Config extends BaseConfig
 
     public function getNewOrderStatus(): string
     {
-        $status = $this->getValue('payment/fintecture/new_order_status');
+        $status = $this->getValue('new_order_status');
         if (!$status) {
             $status = 'pending';
         }
@@ -177,7 +177,7 @@ class Config extends BaseConfig
 
     public function getPaymentCreatedStatus(): string
     {
-        $status = $status = $this->getValue('payment/fintecture/payment_created_status');
+        $status = $this->getValue('payment_created_status');
         if (!$status) {
             $status = 'processing';
         }
@@ -187,9 +187,9 @@ class Config extends BaseConfig
 
     public function getOrderCreatedStatus(): string
     {
-        $status = $status = $this->getValue('payment/fintecture/order_created_status');
+        $status = $this->getValue('order_created_status');
         if (!$status) {
-            $status = 'processing';
+            $status = 'fintecture_order_created';
         }
 
         return $status;
@@ -197,7 +197,7 @@ class Config extends BaseConfig
 
     public function getPaymentPendingStatus(): string
     {
-        $status = $this->getValue('payment/fintecture/payment_pending_status');
+        $status = $this->getValue('payment_pending_status');
         if (!$status) {
             $status = 'pending_payment';
         }
@@ -207,9 +207,9 @@ class Config extends BaseConfig
 
     public function getPaymentOverpaidStatus(): string
     {
-        $status = $this->getValue('payment/fintecture/payment_overpaid_status');
+        $status = $this->getValue('payment_overpaid_status');
         if (!$status) {
-            $status = 'canceled';
+            $status = 'processing';
         }
 
         return $status;
@@ -217,9 +217,9 @@ class Config extends BaseConfig
 
     public function getPaymentPartialStatus(): string
     {
-        $status = $this->getValue('payment/fintecture/payment_partial_status');
+        $status = $this->getValue('payment_partial_status');
         if (!$status) {
-            $status = 'canceled';
+            $status = 'pending_payment';
         }
 
         return $status;
@@ -227,7 +227,7 @@ class Config extends BaseConfig
 
     public function getPaymentFailedStatus(): string
     {
-        $status = $this->getValue('payment/fintecture/payment_failed_status');
+        $status = $this->getValue('payment_failed_status');
         if (!$status) {
             $status = 'canceled';
         }
@@ -237,7 +237,7 @@ class Config extends BaseConfig
 
     public function getPartialRefundStatus(): string
     {
-        $status = $this->getValue('payment/fintecture/partial_refund_status');
+        $status = $this->getValue('partial_refund_status');
         if (!$status) {
             $status = 'fintecture_partial_refund';
         }

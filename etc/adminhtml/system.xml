@@ -7,6 +7,10 @@
                 <fieldset_css>fintecture-admin-section</fieldset_css>
                 <frontend_model>Fintecture\Payment\Block\Adminhtml\System\Config\Fieldset\Payment</frontend_model>
 
+                <field id="documentation" type="text" translate="label comment" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <frontend_model>Fintecture\Payment\Block\Adminhtml\System\Config\Information\Documentation</frontend_model>
+                </field>
+
                 <group id="general" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Settings</label>
 
@@ -293,7 +297,17 @@
                 <fieldset_css>fintecture-admin-section</fieldset_css>
                 <frontend_model>Fintecture\Payment\Block\Adminhtml\System\Config\Fieldset\Payment</frontend_model>
 
+                <group id="fintecture_message" translate="label comment" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <frontend_model>Fintecture\Payment\Block\Adminhtml\System\Config\Renderer\BnplMessageRenderer</frontend_model>
+                </group>
+
+                <field id="documentation" type="text" translate="label comment" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <frontend_model>Fintecture\Payment\Block\Adminhtml\System\Config\Information\Documentation</frontend_model>
+                </field>
+
                 <group id="general_bnpl" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <frontend_model>Fintecture\Payment\Block\Adminhtml\System\Config\Renderer\BnplRenderer</frontend_model>
+
                     <label>Settings</label>
 
                     <field id="active" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -306,6 +320,8 @@
 
                  <!-- Start payment options -->
                 <group id="payment_options_bnpl" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <frontend_model>Fintecture\Payment\Block\Adminhtml\System\Config\Renderer\BnplRenderer</frontend_model>
+
                     <label>Payment options</label>
 
                     <field id="sort_order" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -318,6 +334,8 @@
 
                 <!-- Start Design Options -->
                 <group id="design_options" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <frontend_model>Fintecture\Payment\Block\Adminhtml\System\Config\Renderer\BnplRenderer</frontend_model>
+
                     <label>Design options</label>
 
                     <field id="recommend_bnpl_badge" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -331,7 +349,10 @@
 
                 <!-- Start Advanced Options -->
                 <group id="advanced_bnpl" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <frontend_model>Fintecture\Payment\Block\Adminhtml\System\Config\Renderer\BnplRenderer</frontend_model>
+
                     <label>Advanced settings</label>
+                    
                     <field id="version" type="text" translate="label" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
                         <frontend_model>Fintecture\Payment\Block\Adminhtml\System\Config\Form\Version</frontend_model>
                     </field>
